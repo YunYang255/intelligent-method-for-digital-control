@@ -259,3 +259,35 @@ y_d = y_end;
 写入直线的 G 代码命令 G01，用于直线插补。
 
 更新刀具的当前位置 x_d 和 y_d.
+
+处理圆弧(ARC)
+
+case 'ARC'
+
+    [x_center, y_center, radius, start_angle, end_angle] = deal(e.arc(1,1), e.arc(1,2), e.arc(1,3), e.arc(1,4), e.arc(1,5));
+    
+    fprintf(fid, 'G02 X%.3f Y%.3f I%.3f J%.3f;\n', x_center + radius*cosd(end_angle), y_center + radius*sind(end_angle), radius*cosd(start_angle), radius*sind(start_angle));
+    
+    x_d = x_center + radius*cosd(end_angle);
+    
+    y_d = y_center + radius*sind(end_angle);
+
+获取圆弧的中心坐标、半径、起始角度和终止角度。写入圆弧的 G 代码命令 G02，用于顺时针圆弧插补。更新刀具的当前位置 x_d 和 y_d。
+
+case 'CIRCLE'
+
+    x_center = e.circle(1,1);
+    
+    y_center = e.circle(1,2);
+    
+    radius = e.circle(1,3);
+    
+    fprintf(fid, 'G02 X%.3f Y%.3f I%.3f J%.3f;\n', x_center + radius, y_center, radius, 0);
+    
+    x_d = x_center + radius;
+    
+    y_d = y_center;
+
+获取圆的中心坐标和半径。写入完整圆的 G 代码命令 G02，用于顺时针圆弧插补。更新刀具的当前位置 x_d 和 y_d。processEntity_with_S_and_F 的逻辑与processEntity的逻辑基本类似,只不过processEntity with_S_and_F只是用来处理第一个实体内容,也就是它会将打印出来的代码带上主轴转速和进给速度F.
+
+![image](https://github.com/YunYang255/-/assets/119786612/bc72256e-1489-4302-b532-d52fa2761f5b)
